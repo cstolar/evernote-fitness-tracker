@@ -14,10 +14,8 @@ from evernote.api.client import EvernoteClient
 import pymysql
 from bs4 import BeautifulSoup
 
-
 db = pymysql.connect("localhost", "py", "test", "fitnesstracker")
 cursor = db.cursor()
-
 
 auth_token = "S=s1:U=95a02:E=176a40703a6:C=16f4c55d478:P=1cd:A=en-devtoken:V=2:H=4d9eb91a60f74da30b14a8d9b678ff4a"
 
@@ -54,11 +52,11 @@ offset = 0
 max_notes = 10
 result_spec = NotesMetadataResultSpec(includeTitle=True, includeCreated=True, includeAttributes=True)
 result_list = note_store.findNotesMetadata(auth_token, updated_filter, offset, max_notes, result_spec)
-#print(updated_filter)
+# print(updated_filter)
 
 # Find Training note
 for note in result_list.notes:
-    #print(note.title, " - ", note.guid, " - ", note.created)
+    # print(note.title, " - ", note.guid, " - ", note.created)
     if note.title == "Training Diary":
         training_guid = note.guid
         break
@@ -70,8 +68,6 @@ soup = BeautifulSoup(note_content, 'html.parser')
 finder = soup.find_all('td')
 
 train_data = {}
-
-
 
 for element in finder:
     if element.text == "Date":
@@ -85,19 +81,16 @@ for element in finder:
     else:
         pass
 
-print(train_data.get("Date"))
-
 print("initializing sql push")
-sql = "INSERT INTO training_data(idtraining_data, training_date, training_type, training_reps, training_weight) VALUES ('%i', '%s', '%s', '%s', '%s' )" % (3, train_data.get("Date"), train_data.get("Exercise"), train_data.get("Reps"), train_data.get("Weight"))
+sql = "INSERT INTO training_data(idtraining_data, training_date, training_type, training_reps, training_weight) VALUES ('%i', '%s', '%s', '%s', '%s' )" % (4, train_data.get("Date"), train_data.get("Exercise"), train_data.get("Reps"), train_data.get("Weight"))
 try:
-   # Execute the SQL command
-   cursor.execute(sql)
-   # Commit your changes in the database
-   db.commit()
-   print("Pushed to DB")
+    # Execute the SQL command
+    cursor.execute(sql)
+    # Commit your changes in the database
+    db.commit()
+    print("Pushed to DB")
 except:
-   # Rollback in case there is any error
-   db.rollback()
+    # Rollback in case there is any error
+    db.rollback()
+    print("Rolled back!")
 db.close()
-
-
