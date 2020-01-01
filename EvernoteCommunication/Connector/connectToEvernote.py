@@ -1,3 +1,6 @@
+# Logging
+from Logger.Logger import logger
+
 # Import token
 from utils.apiRef import token, china, sandbox
 
@@ -8,9 +11,9 @@ from evernote.api.client import EvernoteClient
 # Connect to Evernote & get User Store
 def connecttoevernote():
     """
-    Connects client to Evernote
-    :return: User_store
+    Connects client to Evernote and returns client session
+    :return: client
     """
     client = EvernoteClient(token=token, sandbox=sandbox, china=china)
-    print("Successfully connected to Evernote")
-    return client.get_user_store()
+    logger.info("Connected to Evernote")
+    return client
